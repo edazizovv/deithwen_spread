@@ -74,78 +74,29 @@ class Closer:
         pass
 
 
-class FinanceFlow:
-    """
-    Inheritor naming convention: FF_<here 5 literal code>_<here 2 literal version>
-    """
-    def __init__(self, **kwargs):
-        """
-        To be implemented
-        """
-        pass
-
-    @property
-    def n(self):
-        """
-        Represents joint n for subelements as complex
-
-        To be implemented
-        """
-        return
-
-    @property
-    def representative(self):
-        """
-        Representative time series
-
-        To be implemented; it is possible to set not realized
-        """
-        return
-
-    def long_flow(self, start, end):
-        """
-        Joint per capital flow for "long" position
-
-        To be implemented
-        """
-        pass
-
-    def short_flow(self, start, end):
-        """
-        Joint per capital flow for "short" position
-
-        To be implemented
-        """
-        pass
-
-
 class Essence:
     """
     Inheritor naming convention: ES_<here 5 literal code>_<here 2 literal version>
     """
-    def __init__(self, source, closer):
-        self.source = source
+    def __init__(self, flow, closer):
+        self.flow = flow
         self.closer = closer
 
-    @property
-    def n(self):
-        return self.source.n
-
-    @property
-    def solder(self):
-        return self.source.solder
-
     def long_flow(self, start, end):
-        return self.source.long_flow(start=start, end=end)
+        self.flow.dq(start=start, end=end, pos_one_long=True)
+        return self.flow
 
     def short_flow(self, start, end):
-        return self.source.short_flow(start=start, end=end)
+        self.flow.dq(start=start, end=end, pos_one_long=False)
+        return self.flow
 
     def long_result(self, start, end):
-        return self.closer.resolve(self.long_flow(start=start, end=end))
+        self.long_flow(start=start, end=end)
+        return self.closer.resolve(self.flow)
 
     def short_result(self, start, end):
-        return self.closer.resolve(self.short_flow(start=start, end=end))
+        self.short_flow(start=start, end=end)
+        return self.closer.resolve(self.flow)
 
 
 class Store:
